@@ -3,40 +3,37 @@ using System;
 using NUnit.Framework;
 using BDDTraining.ModelClass;
 using BDDTraining.HelperClass;
+using BDDTraining.Main.ModelClass;
 
 namespace BDDTraining.Steps
 {
     [Binding]
-    public sealed class CashWithdrawStepDefinitions
+    public class CashWithdrawStepDefinitions
     {
-        private Account account;
         private DomainHelper domainHelper;
 
         public CashWithdrawStepDefinitions()
-        {
+        {   
             domainHelper = new DomainHelper();
         }
 
         [Given(@"I have a balance of \$(.*) in my account")]
         public void GivenIHaveABalanceOfInMyAccount(int amount)
         {
-            account = new Account();
-            account.deposite(amount);
-            domainHelper.getAccount().deposite(amount);
-            Assert.AreEqual(amount, account.getBalance());
+            domainHelper.GetAccount().deposite(amount);
+            Assert.AreEqual(amount, domainHelper.GetAccount().getBalance());
         }
 
         [When(@"I request \$(.*)")]
         public void WhenIRequest(int requestAmount)
         {
-            Teller teller = new Teller();
-            teller.withdrawCash(account,requestAmount);
+            domainHelper.GetTeller().withdrawCash(domainHelper.GetAccount(), requestAmount);
         }
 
         [Then(@"\$(.*) should be dispensed")]
-        public void ThenShouldBeDispensed(int p0)
+        public void ThenShouldBeDispensed(int dispensedAmount)
         {
-            
+            Assert.AreEqual(dispensedAmount, domainHelper.GetCashSlot().GetContents());
         }
 
     }
